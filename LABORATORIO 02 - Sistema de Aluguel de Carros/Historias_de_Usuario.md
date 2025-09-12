@@ -2,7 +2,7 @@
 
 ## US01 – Cadastro
 **Como** visitante  
-**Quero** cadastrar-me com dados pessoais (RG, CPF, nome, endereço, profissão)  
+**Quero** cadastrar-me com dados pessoais (RG, CPF, nome, endereço, profissão).
 **Para** usar o sistema.  
 **Critérios de aceite:**
 - Validação de CPF e RG
@@ -138,4 +138,4 @@
 - Valor de renda deve ser positivo
 - Dados ficam vinculados ao cliente autenticado
 
-Atualizado via commit de sincroniza��o.
+Atualizado via commit de sincroniza��o.
