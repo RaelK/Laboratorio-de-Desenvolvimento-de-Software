@@ -137,3 +137,5 @@
 - Nome da entidade empregadora obrigatÃ³rio
 - Valor de renda deve ser positivo
 - Dados ficam vinculados ao cliente autenticado
+
+Atualizado via commit de sincronização.
