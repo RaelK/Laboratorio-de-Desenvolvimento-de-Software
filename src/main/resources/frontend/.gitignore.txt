@@ -1,0 +1,12 @@
+# Ignorar dependências do Node
+node_modules/
+
+# Build do frontend (será gerado com npm run build)
+dist/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

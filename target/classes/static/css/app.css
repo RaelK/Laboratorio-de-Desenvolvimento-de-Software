@@ -1,0 +1,16 @@
+body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0;background:#f6f8fb;}
+.nav{background:#0c68ff;color:#fff;padding:12px 20px;display:flex;gap:20px;align-items:center}
+.nav a{color:#fff;text-decoration:none;margin-right:14px}
+.container{max-width:1100px;margin:24px auto;padding:0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.card{background:#fff;border:1px solid #e6e6e6;border-radius:14px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.card-title{display:flex;justify-content:space-between;align-items:center;font-weight:600;margin-bottom:8px}
+.badge{background:#e7f5ff;color:#0369a1;padding:4px 10px;border-radius:999px;font-size:12px}
+.btn{padding:10px 14px;border-radius:10px;border:none;background:#0c68ff;color:#fff;cursor:pointer}
+.btn.outline{background:#fff;color:#0c68ff;border:1px solid #0c68ff}
+.btn.primary{background:#0c68ff}
+.form label{display:block;margin-bottom:12px}
+.form input,.form select{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px}
+.two-col{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
+.steps{background:#fff;border:1px solid #eee;border-radius:14px;padding:16px}
+.row{display:grid;grid-template-columns:1fr 160px;gap:12px}
