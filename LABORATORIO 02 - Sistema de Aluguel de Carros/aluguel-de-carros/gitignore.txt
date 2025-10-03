@@ -1,9 +1,0 @@
-# Build / dependências
-target/
-node_modules/
-dist/
-.vscode/
-.idea/
-
-# Logs
-*.log
