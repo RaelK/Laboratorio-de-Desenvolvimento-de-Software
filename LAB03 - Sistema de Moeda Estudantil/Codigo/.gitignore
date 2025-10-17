@@ -1,0 +1,38 @@
+# ============================
+# FRONTEND - React + Vite + TypeScript
+# ============================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.local
+frontend/.DS_Store
+frontend/.eslintcache
+
+# ============================
+# BACKEND - Spring Boot + Maven
+# ============================
+backend/bitStudent/target/
+backend/bitStudent/.classpath
+backend/bitStudent/.project
+backend/bitStudent/.settings/
+backend/bitStudent/.DS_Store
+
+# ============================
+# IDEs e Ferramentas
+# ============================
+.vscode/
+.idea/
+*.iml
+
+# ============================
+# Sistema Operacional
+# ============================
+Thumbs.db
+.DS_Store
+
+# ============================
+# Logs e arquivos temporários
+# ============================
+*.log
+*.tmp
