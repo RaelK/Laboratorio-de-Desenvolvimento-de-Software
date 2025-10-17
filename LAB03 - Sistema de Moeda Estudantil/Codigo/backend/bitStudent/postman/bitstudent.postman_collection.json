@@ -1,0 +1,229 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+    "name": "BitStudent - API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleção para testar os endpoints CRUD de Aluno e EmpresaParceira do projeto BitStudent"
+  },
+  "item": [
+    {
+      "name": "Alunos",
+      "item": [
+        {
+          "name": "Listar Alunos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alunos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar Aluno por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alunos/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Aluno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Teste Aluno\",\n  \"email\": \"teste.aluno@example.com\",\n  \"cpf\": \"11122233344\",\n  \"login\": \"testealuno\",\n  \"senha\": \"senha123\",\n  \"rg\": \"RG123456\",\n  \"endereco\": \"Rua Teste, 1\",\n  \"curso\": \"Sistemas\",\n  \"saldoMoedas\": 10,\n  \"instituicaoEnsino\": { \"id\": 1 }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Aluno (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Teste Aluno Atualizado\",\n  \"email\": \"teste.atualizado@example.com\",\n  \"cpf\": \"11122233344\",\n  \"login\": \"testealuno\",\n  \"senha\": \"novasenha\",\n  \"rg\": \"RG123456\",\n  \"endereco\": \"Rua Teste, 1\",\n  \"curso\": \"Sistemas\",\n  \"saldoMoedas\": 20,\n  \"instituicaoEnsino\": { \"id\": 1 }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/alunos/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Deletar Aluno",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/alunos/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "alunos",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Empresas",
+      "item": [
+        {
+          "name": "Listar Empresas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/empresas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar Empresa por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/empresas/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Empresa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Empresa X\",\n  \"email\": \"contato@empresa.com\",\n  \"login\": \"empresaX\",\n  \"senha\": \"senha123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/empresas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Empresa (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Empresa X Atualizada\",\n  \"email\": \"contato@empresa.com\",\n  \"login\": \"empresaX\",\n  \"senha\": \"novasenha\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/empresas/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Deletar Empresa",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/empresas/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresas",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}
