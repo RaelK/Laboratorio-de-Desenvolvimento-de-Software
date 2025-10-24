@@ -4,11 +4,35 @@
 
 .card {
   @apply bg-[#0f1b3d] border border-brand-900/40 rounded-2xl p-5 shadow-xl;
-  background-image: radial-gradient(800px circle at 0% 0%, rgba(14,165,233,.15), transparent 40%);
+  background-image: radial-gradient(800px circle at 0% 0%,
+      rgba(14, 165, 233, 0.25),
+      transparent 40%);
 }
-.btn { @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-brand-900 hover:bg-brand-800 transition; }
-.btn-primary { @apply border-brand-500 bg-brand-600 hover:bg-brand-500; }
-.input { @apply w-full bg-[#0b1636] border border-white/10 rounded-xl px-3 py-2 outline-none; }
-.label { @apply text-sm text-white/70 mb-1 block; }
-.table th { @apply text-left text-white/60 bg-[#0b1636] font-medium px-3 py-2; }
-.table td { @apply border-b border-white/10 px-3 py-2; }
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-brand-900 hover:bg-brand-800 text-white font-medium cursor-pointer transition;
+}
+
+.btn-primary {
+  @apply border-brand-500 bg-brand-600 hover:bg-brand-500;
+}
+
+.input {
+  @apply w-full bg-[#0b1636] border border-white/10 rounded-xl px-3 py-2 outline-none text-white;
+}
+
+.input:focus {
+  @apply ring-2 ring-brand-500/50 border-brand-600;
+}
+
+.label {
+  @apply text-sm text-white/70 mb-1 block;
+}
+
+.table th {
+  @apply text-left text-white/60 bg-[#0b1636] font-medium px-3 py-2;
+}
+
+.table td {
+  @apply border-b border-white/10 px-3 py-2;
+}

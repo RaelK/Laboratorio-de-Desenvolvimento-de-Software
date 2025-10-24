@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { deleteStudent, listStudents } from '../../api/students'
 import type { Aluno } from '../../types'
-import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa'
+import { FaPlus, FaEdit, FaTrash, FaIdBadge } from 'react-icons/fa'
 
 export default function StudentsList() {
   const [items, setItems] = useState<Aluno[]>([])
@@ -17,10 +17,10 @@ export default function StudentsList() {
       setItems(data)
     } finally { setLoading(false) }
   }
-  useEffect(()=>{ load() }, [])
+  useEffect(() => { load() }, [])
 
   async function onDelete(id: number) {
-    if(!confirm('Deseja remover este aluno?')) return
+    if (!confirm('Deseja remover este aluno?')) return
     await deleteStudent(id)
     await load()
   }
@@ -37,8 +37,8 @@ export default function StudentsList() {
           <p className="text-white/60">Gerencie cadastros</p>
         </div>
         <div className="flex gap-2">
-          <input className="input" placeholder="Pesquisar..." value={q} onChange={e=>setQ(e.target.value)} />
-          <Link to="/alunos/novo" className="btn btn-primary"><FaPlus/> Novo</Link>
+          <input className="input" placeholder="Pesquisar..." value={q} onChange={e => setQ(e.target.value)} />
+          <Link to="/alunos/novo" className="btn btn-primary"><FaPlus /> Novo</Link>
         </div>
       </div>
 
@@ -61,14 +61,15 @@ export default function StudentsList() {
                   <td>{a.instituicaoEnsino?.nome}</td>
                   <td>{a.saldoMoedas}</td>
                   <td className="flex gap-2">
-                    <button className="btn" onClick={()=>navigate(`/alunos/${a.id}`)}><FaEdit/></button>
-                    <button className="btn bg-red-700 hover:bg-red-600" onClick={()=>onDelete(a.id)}><FaTrash/></button>
+                    <button className="btn" onClick={() => navigate(`/alunos/${a.id}`)}><FaEdit /></button>
+                    <button className="btn" onClick={() => navigate(`/alunos/${a.id}/carteira`)}><FaIdBadge /></button>
+                    <button className="btn bg-red-700 hover:bg-red-600" onClick={() => onDelete(a.id)}><FaTrash /></button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {filtered.length===0 && <p className="text-white/60 mt-3">Nenhum aluno encontrado.</p>}
+          {filtered.length === 0 && <p className="text-white/60 mt-3">Nenhum aluno encontrado.</p>}
         </div>
       )}
     </div>

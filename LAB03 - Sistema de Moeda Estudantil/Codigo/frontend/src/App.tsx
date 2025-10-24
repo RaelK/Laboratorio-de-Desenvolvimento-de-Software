@@ -1,6 +1,7 @@
 import { NavLink, Route, Routes, Link } from 'react-router-dom'
 import StudentsList from './pages/students/StudentsList'
 import StudentsForm from './pages/students/StudentsForm'
+import StudentProfile from './pages/students/StudentProfile'
 import CompaniesList from './pages/companies/CompaniesList'
 import CompaniesForm from './pages/companies/CompaniesForm'
 import { FaCoins, FaSchool, FaUserGraduate, FaBuilding } from 'react-icons/fa'
@@ -15,11 +16,11 @@ export default function App() {
             <span>bitStudent</span>
           </Link>
           <nav className="flex gap-2">
-            <NavLink to="/alunos" className={({isActive}) => isActive ? 'btn btn-primary' : 'btn'}>
-              <FaUserGraduate/> Alunos
+            <NavLink to="/alunos" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
+              <FaUserGraduate /> Alunos
             </NavLink>
-            <NavLink to="/empresas" className={({isActive}) => isActive ? 'btn btn-primary' : 'btn'}>
-              <FaBuilding/> Empresas
+            <NavLink to="/empresas" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
+              <FaBuilding /> Empresas
             </NavLink>
           </nav>
         </div>
@@ -30,7 +31,7 @@ export default function App() {
           <Route path="/" element={
             <div className="card">
               <div className="flex items-center gap-3 text-2xl font-bold">
-                <FaSchool className="text-brand-300"/>
+                <FaSchool className="text-brand-300" />
                 <span>Bem-vindo(a) ao bitStudent</span>
               </div>
               <p className="text-white/70 mt-2">Cadastre sua Empresa e gerencie seus alunos.</p>
@@ -39,13 +40,14 @@ export default function App() {
                 <NavLink to="/empresas" className="btn">Gerenciar Empresas</NavLink>
               </div>
             </div>
-          }/>
-          <Route path="/alunos" element={<StudentsList/>}/>
-          <Route path="/alunos/novo" element={<StudentsForm/>}/>
-          <Route path="/alunos/:id" element={<StudentsForm/>}/>
-          <Route path="/empresas" element={<CompaniesList/>}/>
-          <Route path="/empresas/nova" element={<CompaniesForm/>}/>
-          <Route path="/empresas/:id" element={<CompaniesForm/>}/>
+          } />
+          <Route path="/alunos" element={<StudentsList />} />
+          <Route path="/alunos/novo" element={<StudentsForm />} />
+          <Route path="/alunos/:id" element={<StudentsForm />} />
+          <Route path="/empresas" element={<CompaniesList />} />
+          <Route path="/empresas/nova" element={<CompaniesForm />} />
+          <Route path="/empresas/:id" element={<CompaniesForm />} />
+          <Route path="/alunos/:id/carteira" element={<StudentProfile />} />
         </Routes>
       </main>
     </div>
