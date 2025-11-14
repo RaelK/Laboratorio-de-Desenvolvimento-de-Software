@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transacao")
@@ -20,7 +19,7 @@ public class Transacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date data;
+    private LocalDateTime data;
     private int valor;
     private String descricao;
 
@@ -31,5 +30,4 @@ public class Transacao {
     @ManyToOne
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
-
 }

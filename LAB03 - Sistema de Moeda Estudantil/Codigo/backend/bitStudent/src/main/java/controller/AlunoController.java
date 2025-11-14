@@ -3,9 +3,11 @@ package controller;
 import controller.dto.AlunoCreateDTO;
 import controller.dto.AlunoDTO;
 import model.Aluno;
+import model.Transacao;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.AlunoService;
+import service.TransacaoService;
 
 import java.net.URI;
 import java.util.List;
@@ -13,12 +15,15 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/alunos")
+@CrossOrigin(origins = "*")
 public class AlunoController {
 
     private final AlunoService alunoService;
+    private final TransacaoService transacaoService;
 
-    public AlunoController(AlunoService alunoService) {
+    public AlunoController(AlunoService alunoService, TransacaoService transacaoService) {
         this.alunoService = alunoService;
+        this.transacaoService = transacaoService;
     }
 
     @GetMapping
@@ -50,6 +55,13 @@ public class AlunoController {
         return ResponseEntity.noContent().build();
     }
 
+    /** 🔹 Extrato de moedas do aluno */
+    @GetMapping("/{id}/extrato")
+    public ResponseEntity<List<Transacao>> extrato(@PathVariable Long id) {
+        return ResponseEntity.ok(transacaoService.extratoAluno(id));
+    }
+
+    // -------------------- DTO mappers --------------------
     private AlunoDTO toDTO(Aluno a) {
         return AlunoDTO.builder()
                 .id(a.getId())

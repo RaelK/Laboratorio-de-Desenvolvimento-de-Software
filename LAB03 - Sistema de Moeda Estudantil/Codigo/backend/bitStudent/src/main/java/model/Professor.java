@@ -1,15 +1,13 @@
 package model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "professor")
@@ -28,8 +26,24 @@ public class Professor {
     private String cpf;
     private String login;
     private String senha;
-
     private String departamento;
-    private int saldoMoedas;
 
+    /** 🔹 Saldo total de moedas disponíveis (acumulável a cada semestre) */
+    @Builder.Default
+    private Integer saldoMoedas = 0;
+
+    /** 🔹 Lista de alunos vinculados ao professor */
+    @OneToMany(mappedBy = "professor")
+    private List<Aluno> alunos;
+
+    /** 🔹 Constante: 1000 moedas por aluno por semestre */
+    public static final int MOEDAS_POR_ALUNO_POR_SEMESTRE = 1000;
+
+    /** 🔹 Vínculo institucional */
+    @ManyToOne
+    @JoinColumn(name = "instituicao_id")
+    private InstituicaoEnsino instituicaoEnsino;
+
+    /** 🔹 Data do último crédito semestral */
+    private LocalDate dataUltimoCredito;
 }

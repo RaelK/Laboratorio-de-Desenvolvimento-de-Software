@@ -1,76 +1,63 @@
 package controller;
 
-import controller.dto.ProfessorCreateDTO;
-import controller.dto.ProfessorDTO;
+import lombok.RequiredArgsConstructor;
 import model.Professor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import service.ProfessorService;
+import repository.ProfessorRepository;
 
-import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/professores")
+@RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class ProfessorController {
 
-    private final ProfessorService professorService;
+    private final ProfessorRepository professorRepository;
 
-    public ProfessorController(ProfessorService professorService) {
-        this.professorService = professorService;
-    }
-
+    /** 🔹 Lista todos os professores */
     @GetMapping
-    public List<ProfessorDTO> all() {
-        return professorService.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+    public List<Professor> listar() {
+        return professorRepository.findAll();
     }
 
+    /** 🔹 Busca um professor por ID */
     @GetMapping("/{id}")
-    public ProfessorDTO get(@PathVariable Long id) {
-        return toDTO(professorService.findById(id));
+    public Professor buscar(@PathVariable Long id) {
+        return professorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
     }
 
-    @PostMapping
-    public ResponseEntity<ProfessorDTO> create(@RequestBody ProfessorCreateDTO dto) {
-        Professor p = fromCreateDTO(dto);
-        Professor created = professorService.create(p);
-        return ResponseEntity.created(URI.create("/professores/" + created.getId())).body(toDTO(created));
+    /** 🔹 Credita moedas semestrais (1000 × número de alunos) */
+    @PostMapping("/{id}/creditar")
+    public ResponseEntity<Professor> creditarMoedasSemestre(@PathVariable Long id) {
+        Professor prof = professorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        int bonus = (prof.getAlunos() != null ? prof.getAlunos().size() : 0)
+                * Professor.MOEDAS_POR_ALUNO_POR_SEMESTRE;
+
+        // adiciona ao saldo atual (acumulável)
+        prof.setSaldoMoedas(prof.getSaldoMoedas() + bonus);
+        prof.setDataUltimoCredito(LocalDate.now());
+
+        professorRepository.save(prof);
+        return ResponseEntity.ok(prof);
     }
 
-    @PutMapping("/{id}")
-    public ProfessorDTO update(@PathVariable Long id, @RequestBody ProfessorCreateDTO dto) {
-        Professor updated = fromCreateDTO(dto);
-        return toDTO(professorService.update(id, updated));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        professorService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    private ProfessorDTO toDTO(Professor p) {
-        return ProfessorDTO.builder()
-                .id(p.getId())
-                .nome(p.getNome())
-                .email(p.getEmail())
-                .cpf(p.getCpf())
-                .login(p.getLogin())
-                .departamento(p.getDepartamento())
-                .saldoMoedas(p.getSaldoMoedas())
-                .build();
-    }
-
-    private Professor fromCreateDTO(ProfessorCreateDTO dto) {
-        return Professor.builder()
-                .nome(dto.getNome())
-                .email(dto.getEmail())
-                .cpf(dto.getCpf())
-                .login(dto.getLogin())
-                .senha(dto.getSenha())
-                .departamento(dto.getDepartamento())
-                .saldoMoedas(dto.getSaldoMoedas())
-                .build();
+    /** 🔹 Credita moedas semestrais a todos os professores */
+    @PostMapping("/creditar-todos")
+    public ResponseEntity<List<Professor>> creditarTodos() {
+        List<Professor> lista = professorRepository.findAll();
+        for (Professor prof : lista) {
+            int bonus = (prof.getAlunos() != null ? prof.getAlunos().size() : 0)
+                    * Professor.MOEDAS_POR_ALUNO_POR_SEMESTRE;
+            prof.setSaldoMoedas(prof.getSaldoMoedas() + bonus);
+            prof.setDataUltimoCredito(LocalDate.now());
+            professorRepository.save(prof);
+        }
+        return ResponseEntity.ok(lista);
     }
 }
