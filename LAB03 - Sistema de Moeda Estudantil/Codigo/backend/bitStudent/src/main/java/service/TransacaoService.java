@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import repository.AlunoRepository;
 import repository.ProfessorRepository;
 import repository.TransacaoRepository;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,14 +18,14 @@ public class TransacaoService {
     private final TransacaoRepository transacaoRepository;
     private final ProfessorRepository professorRepository;
     private final AlunoRepository alunoRepository;
-    private final EmailService emailService; // ✅ integração com o Mailtrap
+    private final EmailService emailService;
 
     public TransacaoService(
             TransacaoRepository transacaoRepository,
             ProfessorRepository professorRepository,
             AlunoRepository alunoRepository,
-            EmailService emailService) {
-
+            EmailService emailService
+    ) {
         this.transacaoRepository = transacaoRepository;
         this.professorRepository = professorRepository;
         this.alunoRepository = alunoRepository;
@@ -33,19 +34,35 @@ public class TransacaoService {
 
     /** 🔹 Envia moedas do professor para um aluno e dispara e-mails */
     @Transactional
-    public Transacao transferirDeProfessorParaAluno(Long professorId, Long alunoId, int valor, String descricao) {
+    public Transacao transferirDeProfessorParaAluno(
+            Long professorId, Long alunoId, int valor, String descricao
+    ) {
+
         Professor p = professorRepository.findById(professorId)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado: " + professorId));
+
         Aluno a = alunoRepository.findById(alunoId)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado: " + alunoId));
 
-        // Calcula total permitido por semestre
+        // ============================================================
+        // ⭐ CORREÇÃO PRINCIPAL: saldo inicial recalculado corretamente
+        // ============================================================
+
         int totalPermitido = (p.getAlunos() != null && !p.getAlunos().isEmpty())
                 ? p.getAlunos().size() * Professor.MOEDAS_POR_ALUNO_POR_SEMESTRE
                 : Professor.MOEDAS_POR_ALUNO_POR_SEMESTRE;
 
-        if (p.getSaldoMoedas() == 0) {
+        // Antes só recarregava quando saldo == 0, agora corrige qualquer valor inválido
+        if (p.getSaldoMoedas() <= 0) {
             p.setSaldoMoedas(totalPermitido);
+        }
+
+        // ============================================================
+        // ⭐ Validação correta: qualquer valor é permitido, exceto > saldo
+        // ============================================================
+
+        if (valor <= 0) {
+            throw new IllegalArgumentException("O valor deve ser maior que zero.");
         }
 
         if (p.getSaldoMoedas() < valor) {
@@ -59,7 +76,7 @@ public class TransacaoService {
         professorRepository.save(p);
         alunoRepository.save(a);
 
-        // Cria e salva a transação
+        // Criação da transação
         Transacao t = Transacao.builder()
                 .data(LocalDateTime.now())
                 .valor(valor)
@@ -70,7 +87,10 @@ public class TransacaoService {
 
         Transacao salva = transacaoRepository.save(t);
 
-        // ✅ Envio de e-mails automáticos
+        // ============================================================
+        // ⭐ Envio de e-mails (mantido como no original)
+        // ============================================================
+
         try {
             String assuntoAluno = "🎓 Você recebeu moedas no sistema bitStudent!";
             String corpoAluno = String.format(
@@ -79,15 +99,10 @@ public class TransacaoService {
 
                     Olá %s,
 
-                    Você recebeu **%d moedas** de reconhecimento do professor **%s**.
+                    Você recebeu **%d moedas** do professor **%s**.
 
-                    📜 Motivo: %s  
+                    📜 Motivo: %s
                     🕓 Data: %s
-
-                    Acesse sua conta no sistema *bitStudent* para consultar seu extrato completo.
-
-                    Atenciosamente,  
-                    Equipe bitStudent
                     """,
                     a.getNome(), valor, p.getNome(), descricao, t.getData()
             );
@@ -99,18 +114,14 @@ public class TransacaoService {
 
                     Olá %s,
 
-                    Você enviou **%d moedas** para o aluno **%s**.  
-                    📜 Motivo: %s  
-                    💰 Saldo atual: %d moedas  
-                    🕓 Data: %s
+                    Você enviou **%d moedas** para o aluno **%s**.
 
-                    Atenciosamente,  
-                    Equipe bitStudent
+                    💰 Saldo atual: %d moedas
+                    🕓 Data: %s
                     """,
-                    p.getNome(), valor, a.getNome(), descricao, p.getSaldoMoedas(), t.getData()
+                    p.getNome(), valor, a.getNome(), p.getSaldoMoedas(), t.getData()
             );
 
-            // Envia e-mails
             emailService.enviarEmail(a.getEmail(), assuntoAluno, corpoAluno);
             emailService.enviarEmail(p.getEmail(), assuntoProfessor, corpoProfessor);
             emailService.enviarEmail(
@@ -120,10 +131,10 @@ public class TransacaoService {
                             """
                             🪙 bitStudent — Cópia administrativa
 
-                            Professor: %s  
-                            Aluno: %s  
-                            Valor: %d  
-                            Motivo: %s  
+                            Professor: %s
+                            Aluno: %s
+                            Valor: %d
+                            Motivo: %s
                             Data: %s
                             """,
                             p.getNome(), a.getNome(), valor, descricao, t.getData()
@@ -131,7 +142,7 @@ public class TransacaoService {
             );
 
         } catch (Exception e) {
-            System.err.println("⚠️ Falha ao enviar e-mails de notificação: " + e.getMessage());
+            System.err.println("⚠️ Falha ao enviar e-mails: " + e.getMessage());
         }
 
         return salva;
