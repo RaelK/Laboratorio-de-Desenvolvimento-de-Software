@@ -63,58 +63,63 @@ export default function CompaniesForm() {
   }
 
   return (
-    <div className="card">
-      <div className="text-xl font-bold mb-4">
-        {isEdit ? 'Editar Empresa' : 'Nova Empresa'}
+    <>
+      {/* 🔹 FUNDO DE TELA (mesmo da lista de empresas) */}
+      <div
+        className="fixed inset-0 bg-cover bg-center -z-10 brightness-50"
+        style={{
+          backgroundImage: "url('/images/apertodemao.jpg')",
+        }}
+      />
+
+      <div className="card max-w-3xl mx-auto mt-10">
+        <div className="text-xl font-bold mb-4">
+          {isEdit ? 'Editar Empresa' : 'Nova Empresa'}
+        </div>
+
+        {/* Formulário */}
+        <form onSubmit={handleSubmit(onSubmit)} className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="label">Nome</label>
+            <input className="input" {...register('nome')} />
+            <small className="text-red-400">{errors.nome?.message}</small>
+          </div>
+
+          <div>
+            <label className="label">Email</label>
+            <input className="input" {...register('email')} />
+            <small className="text-red-400">{errors.email?.message}</small>
+          </div>
+
+          <div>
+            <label className="label">Login</label>
+            <input className="input" {...register('login')} />
+            <small className="text-red-400">{errors.login?.message}</small>
+          </div>
+
+          <div>
+            <label className="label">
+              Senha {isEdit && <span className="text-white/50">(deixe em branco para manter)</span>}
+            </label>
+            <input type="password" className="input" {...register('senha')} />
+            <small className="text-red-400">{errors.senha?.message}</small>
+          </div>
+
+          <div className="md:col-span-2 flex justify-end gap-2 mt-2">
+            <button type="button" className="btn" onClick={() => navigate('/empresas')}>
+              Cancelar
+            </button>
+            <button className="btn btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Salvando...' : 'Salvar'}
+            </button>
+          </div>
+        </form>
+
+        {/* Painel de cobrança */}
+        <div className="mt-6">
+          <CompanyChargePanel totalAPagar={100} />
+        </div>
       </div>
-
-      {/* Formulário de empresa */}
-      <form onSubmit={handleSubmit(onSubmit)} className="grid md:grid-cols-2 gap-4">
-        <div>
-          <label className="label">Nome</label>
-          <input className="input" {...register('nome')} />
-          <small className="text-red-400">{errors.nome?.message}</small>
-        </div>
-
-        <div>
-          <label className="label">Email</label>
-          <input className="input" {...register('email')} />
-          <small className="text-red-400">{errors.email?.message}</small>
-        </div>
-
-        <div>
-          <label className="label">Login</label>
-          <input className="input" {...register('login')} />
-          <small className="text-red-400">{errors.login?.message}</small>
-        </div>
-
-        <div>
-          <label className="label">
-            Senha{' '}
-            {isEdit && <span className="text-white/50">(deixe em branco para manter)</span>}
-          </label>
-          <input type="password" className="input" {...register('senha')} />
-          <small className="text-red-400">{errors.senha?.message}</small>
-        </div>
-
-        <div className="md:col-span-2 flex justify-end gap-2 mt-2">
-          <button
-            type="button"
-            className="btn"
-            onClick={() => navigate('/empresas')}
-          >
-            Cancelar
-          </button>
-          <button className="btn btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? 'Salvando...' : 'Salvar'}
-          </button>
-        </div>
-      </form>
-
-      {/* Painel de cobrança fora do form */}
-      <div className="mt-6">
-        <CompanyChargePanel totalAPagar={100} />
-      </div>
-    </div>
+    </>
   )
 }

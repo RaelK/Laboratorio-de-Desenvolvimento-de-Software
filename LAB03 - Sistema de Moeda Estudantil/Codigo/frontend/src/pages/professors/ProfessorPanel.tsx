@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import { listStudents } from "../../api/students";
 import { transferirMoedas, getExtratoProfessor } from "../../api/transactions";
 import type { Aluno, Transacao } from "../../types";
 
 const PROFESSOR_ID_PADRAO = 1;
-const SALDO_INICIAL = 1000; // saldo fixo do semestre
+const SALDO_INICIAL = 1000;
 
 export default function ProfessorPanel() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
@@ -16,226 +15,224 @@ export default function ProfessorPanel() {
   const [valor, setValor] = useState<number>(10);
   const [descricao, setDescricao] = useState<string>("");
   const [mensagem, setMensagem] = useState<string | null>(null);
-  const [tipoMensagem, setTipoMensagem] = useState<"sucesso" | "erro" | null>(null);
-  const [animarMoedas, setAnimarMoedas] = useState(false);
+  const [tipoMensagem, setTipoMensagem] =
+    useState<"sucesso" | "erro" | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  async function carregarExtrato() {
-    try {
-      const extrato = await getExtratoProfessor(PROFESSOR_ID_PADRAO);
-      setTransacoes(extrato);
-    } catch {
-      setTransacoes([]);
-    }
+  async function carregarDados() {
+    const lista = await listStudents();
+    setAlunos(lista);
+
+    const extrato = await getExtratoProfessor(PROFESSOR_ID_PADRAO);
+    setTransacoes(extrato);
+
+    const totalEnviado = extrato.reduce((acc, t) => acc + t.valor, 0);
+    setSaldo(SALDO_INICIAL - totalEnviado);
   }
 
-  // 🔹 Carrega alunos e extrato ao iniciar
   useEffect(() => {
     (async () => {
-      const lista = await listStudents();
-      console.log("DEBUG alunos:", lista);
-      setAlunos(lista);
-      if (lista.length === 1) setAlunoId(lista[0].id);
-      await carregarExtrato();
+      await carregarDados();
     })();
   }, []);
+
+  function mostrarMensagem(texto: string, tipo: "sucesso" | "erro") {
+    setMensagem(texto);
+    setTipoMensagem(tipo);
+    setTimeout(() => {
+      setMensagem(null);
+      setTipoMensagem(null);
+    }, 6000);
+  }
 
   async function handleEnviar(e: React.FormEvent) {
     e.preventDefault();
 
     if (!alunoId || alunoId === 0 || Number.isNaN(alunoId)) {
-      setTipoMensagem("erro");
-      setMensagem("Selecione um aluno válido antes de enviar moedas.");
+      mostrarMensagem("Selecione um aluno válido.", "erro");
       return;
     }
 
     if (valor <= 0) {
-      setTipoMensagem("erro");
-      setMensagem("O valor deve ser maior que zero.");
+      mostrarMensagem("O valor deve ser maior que zero.", "erro");
       return;
     }
 
     if (valor > saldo) {
-      setTipoMensagem("erro");
-      setMensagem("Saldo insuficiente. Reduza o valor ou aguarde novo semestre.");
+      mostrarMensagem("Saldo insuficiente. Reduza o valor.", "erro");
       return;
     }
 
     try {
-      console.log("DEBUG envio:", {
-        professorId: PROFESSOR_ID_PADRAO,
-        alunoId,
-        valor,
-        descricao,
-      });
-
+      setLoading(true);
       await transferirMoedas({
         professorId: PROFESSOR_ID_PADRAO,
         alunoId: Number(alunoId),
         valor,
-        descricao: descricao || "Reconhecimento de mérito",
+        descricao: descricao || "Moedas enviadas pelo professor",
       });
 
-      // Atualiza saldo e estado local
-      setSaldo((s) => s - valor);
+      mostrarMensagem(
+        `🪙 Moedas enviadas com sucesso! Você acabou de reconhecer o mérito de um aluno com ${valor} moedas.`,
+        "sucesso"
+      );
       setDescricao("");
       setValor(10);
-      await carregarExtrato();
-
-      // 🔔 Mensagem e animação de sucesso
-      setTipoMensagem("sucesso");
-      setMensagem(
-        "💰 Moedas enviadas com sucesso! Um e-mail de confirmação foi encaminhado ao aluno e uma cópia enviada para você."
-      );
-      setAnimarMoedas(true);
-      setTimeout(() => setAnimarMoedas(false), 3000);
-    } catch (error) {
-      console.error("Erro ao enviar moedas:", error);
-      setTipoMensagem("erro");
-      setMensagem("❌ Não foi possível enviar moedas. Tente novamente mais tarde.");
+      await carregarDados();
+    } catch (err) {
+      console.error(err);
+      mostrarMensagem("Erro ao enviar moedas. Tente novamente.", "erro");
+    } finally {
+      setLoading(false);
     }
-
-    setTimeout(() => setMensagem(null), 4500);
   }
 
   return (
-    <div className="relative max-w-5xl mx-auto grid md:grid-cols-2 gap-6 mt-8">
-      {/* 🔹 Mensagem global */}
-      <AnimatePresence>
-        {mensagem && (
-          <motion.div
-            key="mensagem"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
-            className={`absolute top-0 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-xl text-center text-xl font-semibold shadow-md ${
-              tipoMensagem === "sucesso"
-                ? "bg-green-600 text-white"
-                : "bg-red-600 text-white"
-            }`}
-            style={{ zIndex: 1000, width: "80%" }}
-          >
-            {mensagem}
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <>
+      {/* 🔹 FUNDO FIXO PROFESSOR HD */}
+      <div
+        className="fixed inset-0 bg-cover bg-center -z-10 brightness-60"
+        style={{
+          backgroundImage: "url('/images/professor.jpg')",
+        }}
+      />
 
-      {/* 💰 Animação de moedas */}
-      <AnimatePresence>
-        {animarMoedas &&
-          [...Array(12)].map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{
-                opacity: 1,
-                y: -40,
-                x: Math.random() * 400 - 200,
-                rotate: Math.random() * 360,
-              }}
-              animate={{ y: 500, opacity: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 2.8, delay: i * 0.1 }}
-              className="absolute text-yellow-400 text-3xl select-none"
-              style={{
-                top: "60px",
-                left: "50%",
-                transform: `translateX(${Math.random() * 300 - 150}px)`,
-              }}
+      <div className="flex justify-center items-center min-h-screen px-4">
+        <div className="w-full max-w-3xl bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200">
+
+          {/* CABEÇALHO */}
+          <div className="bg-gradient-to-b from-cyan-700 to-cyan-600 text-white px-6 py-4">
+            <h1 className="text-2xl font-bold">Painel do Professor</h1>
+            <p className="text-sm text-cyan-100 mt-1">
+              Gerenciamento de envio de moedas e histórico de movimentações.
+            </p>
+          </div>
+
+          {/* MENSAGEM */}
+          {mensagem && (
+            <div
+              className={`px-6 py-3 text-center text-sm font-semibold ${
+                tipoMensagem === "sucesso"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
             >
-              💰
-            </motion.div>
-          ))}
-      </AnimatePresence>
+              {mensagem}
+            </div>
+          )}
 
-      {/* 🧾 Formulário */}
-      <div className="card mt-20 md:mt-0">
-        <div className="text-2xl font-bold mb-4 text-center">Enviar Moedas</div>
+          {/* FORMULÁRIO */}
+          <div className="px-6 py-5 text-gray-800">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+              <div>
+                <h2 className="text-lg font-bold">Envio de Moedas</h2>
+                <p className="text-sm text-gray-500">
+                  Selecione um aluno, defina o valor e a descrição para registrar o mérito.
+                </p>
+              </div>
 
-        <div className="text-center text-lg mb-3">
-          <span className="text-white/70">Saldo atual: </span>
-          <span className="text-yellow-400 font-bold">{saldo}</span> 🪙
-        </div>
+              <div className="text-right">
+                <span className="text-gray-500 block text-sm">Saldo disponível</span>
+                <span className="text-2xl font-bold text-emerald-600">{saldo}</span>
+                <span className="text-sm text-gray-500 ml-1">moedas</span>
+              </div>
+            </div>
 
-        <form onSubmit={handleEnviar} className="space-y-4">
-          <div>
-            <label className="block mb-1 text-sm text-white/70">Aluno</label>
-            <select
-              value={alunoId}
-              onChange={(e) => setAlunoId(Number(e.target.value))}
-              className="bg-[#1C2541] rounded px-3 py-2 w-full"
-            >
-              <option value="">Selecione um aluno</option>
-              {alunos.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.nome}
-                </option>
-              ))}
-            </select>
-          </div>
+            <form onSubmit={handleEnviar} className="space-y-4">
+              <div>
+                <label className="block mb-1 text-sm text-gray-600">Aluno</label>
+                <select
+                  value={alunoId}
+                  onChange={(e) => setAlunoId(Number(e.target.value))}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+                >
+                  <option value="">Selecione um aluno</option>
+                  {alunos.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div>
-            <label className="block mb-1 text-sm text-white/70">Valor</label>
-            <input
-              type="number"
-              min={1}
-              value={valor}
-              onChange={(e) => setValor(Number(e.target.value))}
-              className="bg-[#1C2541] rounded px-3 py-2 w-full"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-sm text-white/70">Motivo</label>
-            <textarea
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              placeholder="Ex: excelente participação em aula"
-              className="bg-[#1C2541] rounded px-3 py-2 w-full"
-            />
-          </div>
-
-          <button className="btn btn-primary w-full font-semibold">
-            Enviar Moedas
-          </button>
-        </form>
-
-        <div className="mt-6 flex justify-center">
-          <Link to="/" className="btn">
-            Voltar ao Início
-          </Link>
-        </div>
-      </div>
-
-      {/* 🧾 Extrato */}
-      <div className="card">
-        <div className="text-2xl font-bold mb-4 text-center">
-          Extrato de Envios
-        </div>
-
-        {transacoes.length === 0 ? (
-          <p className="text-center">Nenhuma transação encontrada.</p>
-        ) : (
-          <ul className="space-y-3">
-            {transacoes.map((t) => (
-              <li
-                key={t.id}
-                className="border border-white/10 rounded-lg p-3 flex justify-between items-center"
-              >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <div className="font-semibold">{t.descricao}</div>
-                  <div className="text-sm text-white/60">
-                    Enviado para: {t.aluno?.nome || "—"}
-                  </div>
-                  <div className="text-xs text-white/40">
-                    {new Date(t.data).toLocaleString()}
-                  </div>
+                  <label className="block mb-1 text-sm text-gray-600">Valor</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={valor}
+                    onChange={(e) => setValor(Number(e.target.value))}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+                  />
                 </div>
-                <div className="text-red-400 font-bold">-{t.valor}</div>
-              </li>
-            ))}
-          </ul>
-        )}
+
+                <div>
+                  <label className="block mb-1 text-sm text-gray-600">
+                    Descrição (opcional)
+                  </label>
+                  <input
+                    type="text"
+                    value={descricao}
+                    onChange={(e) => setDescricao(e.target.value)}
+                    placeholder="Ex: participação em projeto, seminário, etc."
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn-primary w-full md:w-auto"
+                disabled={loading}
+              >
+                {loading ? "Enviando..." : "Enviar Moedas"}
+              </button>
+            </form>
+          </div>
+
+          {/* DIVISÃO */}
+          <hr className="border-gray-300" />
+
+          {/* HISTÓRICO */}
+          <div className="px-6 py-5">
+            <h2 className="text-lg font-bold mb-3 text-gray-800">
+              Histórico de Movimentações
+            </h2>
+
+            {transacoes.length === 0 ? (
+              <p className="text-gray-500">Nenhuma transação encontrada.</p>
+            ) : (
+              <ul className="space-y-3">
+                {transacoes.map((t) => (
+                  <li
+                    key={t.id}
+                    className="p-3 border border-gray-200 rounded-md shadow-sm text-sm flex justify-between items-center"
+                  >
+                    <div>
+                      <div className="font-semibold">{t.descricao}</div>
+                      <div className="text-xs text-gray-500">
+                        Enviado para: {t.aluno?.nome || "—"}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {new Date(t.data).toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="font-bold text-red-600">-{t.valor}</div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* RODAPÉ */}
+          <div className="px-6 py-6 flex flex-col items-center gap-3">
+            <Link to="/" className="btn w-full max-w-xs text-center">
+              Voltar ao Início
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -36,3 +36,70 @@
 .table td {
   @apply border-b border-white/10 px-3 py-2;
 }
+
+/* =========================================================
+   VIDEO DE FUNDO NA HOME
+   ========================================================= */
+
+.video-bg-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+.video-bg-iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 177.77vh;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border: none;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .video-bg-iframe {
+    width: 100vw;
+    height: 56.25vw;
+  }
+}
+
+.video-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top, rgba(0,0,0,0.25), rgba(0,0,0,0.75));
+}
+
+/* =========================================================
+   BACKGROUND DINÂMICO DAS PÁGINAS
+   ========================================================= */
+
+.dynamic-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -5;
+  background-size: cover;
+  background-position: center;
+  /* Ajuste profissional: blur + darken */
+  filter: blur(2px) brightness(0.55);
+}
+
+/* FUNDO DE TELA GLOBAL PARA CERTAS PÁGINAS */
+.page-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  filter: brightness(0.55);
+}
