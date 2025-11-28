@@ -7,6 +7,8 @@ import CompaniesForm from './pages/companies/CompaniesForm'
 import ProfessorPanel from './pages/professors/ProfessorPanel'
 import StudentStatement from "./pages/students/StudentStatement"
 import ProfessorProfile from "./pages/professors/ProfessorProfile"
+import Login from './pages/auth/Login'
+import { useAuth } from './contexts/AuthContext'
 
 import {
   FaCoins,
@@ -14,13 +16,15 @@ import {
   FaUserGraduate,
   FaBuilding,
   FaChalkboardTeacher,
-  FaListAlt
+  FaListAlt,
+  FaSignOutAlt
 } from 'react-icons/fa'
 
 export default function App() {
   // Usado para saber se estamos na página inicial
   const location = useLocation()
   const isHome = location.pathname === "/"
+  const { user, logout, isAuthenticated } = useAuth()
 
   return (
     <div>
@@ -45,15 +49,26 @@ export default function App() {
           </Link>
 
           <nav className="flex gap-2">
-            <NavLink to="/alunos" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
-              <FaUserGraduate /> Alunos
-            </NavLink>
-            <NavLink to="/empresas" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
-              <FaBuilding /> Empresas
-            </NavLink>
-            <NavLink to="/professores/painel" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
-              <FaChalkboardTeacher /> Professor
-            </NavLink>
+            {isAuthenticated ? (
+              <>
+                <NavLink to="/alunos" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
+                  <FaUserGraduate /> Alunos
+                </NavLink>
+                <NavLink to="/empresas" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
+                  <FaBuilding /> Empresas
+                </NavLink>
+                <NavLink to="/professores/painel" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
+                  <FaChalkboardTeacher /> Professor
+                </NavLink>
+                <button onClick={logout} className="btn">
+                  <FaSignOutAlt /> Sair
+                </button>
+              </>
+            ) : (
+              <NavLink to="/login" className={({ isActive }) => isActive ? 'btn btn-primary' : 'btn'}>
+                Entrar
+              </NavLink>
+            )}
           </nav>
         </div>
       </header>
@@ -128,6 +143,9 @@ export default function App() {
                 </div>
               </div>
             } />
+
+            {/* ---------------- AUTENTICAÇÃO ---------------- */}
+            <Route path="/login" element={<Login />} />
 
             {/* ---------------- OUTRAS PÁGINAS ---------------- */}
             <Route path="/alunos" element={<StudentsList />} />

@@ -1,0 +1,12 @@
+# ============================
+# CONFIGURAÇÃO LOCAL (NÃO COMMITAR)
+# ============================
+# Copie este arquivo para application-local.properties e configure com suas credenciais reais
+# O arquivo application-local.properties deve estar no .gitignore
+
+# Mailtrap
+spring.mail.username=sua_username_mailtrap
+spring.mail.password=sua_senha_mailtrap
+
+# JWT Secret (mínimo 64 caracteres)
+jwt.secret=sua-chave-secreta-muito-longa-aqui-minimo-64-caracteres-para-hs512-algorithm
