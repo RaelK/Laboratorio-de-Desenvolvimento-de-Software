@@ -99,7 +99,7 @@ public class TransacaoService {
 
                     Olá %s,
 
-                    Você recebeu **%d moedas** do professor **%s**.
+                    Você recebeu %d moedas do professor "%s".
 
                     📜 Motivo: %s
                     🕓 Data: %s
@@ -114,7 +114,7 @@ public class TransacaoService {
 
                     Olá %s,
 
-                    Você enviou **%d moedas** para o aluno **%s**.
+                    Você enviou %d moedas para o aluno "%s".
 
                     💰 Saldo atual: %d moedas
                     🕓 Data: %s

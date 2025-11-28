@@ -1,28 +1,23 @@
 package service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+
 
 @Service
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    private final GmailApiMailSender gmailSender;
 
-    @Value("${spring.mail.username}")
-    private String remetente;
-
-    public EmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+    public EmailService(GmailApiMailSender gmailSender) {
+        this.gmailSender = gmailSender;
     }
 
     public void enviarEmail(String destinatario, String assunto, String corpo) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(remetente);
-        message.setTo(destinatario);
-        message.setSubject(assunto);
-        message.setText(corpo);
-        mailSender.send(message);
+        try {
+            gmailSender.enviar(destinatario, assunto, corpo);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao enviar email", e);
+        }
     }
 }
