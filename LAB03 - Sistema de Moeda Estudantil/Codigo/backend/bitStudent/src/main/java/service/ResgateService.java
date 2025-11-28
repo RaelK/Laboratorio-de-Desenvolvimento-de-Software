@@ -18,11 +18,13 @@ public class ResgateService {
     private final ResgateRepository resgateRepository;
     private final VantagemRepository vantagemRepository;
     private final AlunoRepository alunoRepository;
+    private final EmailService emailService;
 
-    public ResgateService(ResgateRepository resgateRepository, VantagemRepository vantagemRepository, AlunoRepository alunoRepository) {
+    public ResgateService(ResgateRepository resgateRepository, VantagemRepository vantagemRepository, AlunoRepository alunoRepository, EmailService emailService) {
         this.resgateRepository = resgateRepository;
         this.vantagemRepository = vantagemRepository;
         this.alunoRepository = alunoRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -45,6 +47,41 @@ public class ResgateService {
                 .empresaParceira(v.getEmpresaParceira())
                 .build();
 
-        return resgateRepository.save(r);
+        Resgate resgateSalvo = resgateRepository.save(r);
+
+        // ✅ Envio de e-mail para o aluno sobre o resgate
+        try {
+            String assunto = "🎁 Resgate de vantagem realizado — bitStudent";
+            String corpo = String.format(
+                    """
+                    🪙 bitStudent
+
+                    Olá %s,
+
+                    Você resgatou a vantagem: %s
+                    💰 Moedas utilizadas: %d
+                    🎟️ Código do cupom: %s
+                    📅 Data do resgate: %s
+
+                    Apresente este código na empresa parceira para utilizar sua vantagem.
+
+                    Atenciosamente,  
+                    Equipe bitStudent
+                    """,
+                    a.getNome(),
+                    v.getDescricao(),
+                    v.getCustoEmMoedas(),
+                    resgateSalvo.getCodigoCupom(),
+                    resgateSalvo.getData()
+                    
+            );
+
+            emailService.enviarEmail(a.getEmail(), assunto, corpo);
+
+        } catch (Exception e) {
+            System.err.println("⚠️ Falha ao enviar e-mail de resgate: " + e.getMessage());
+        }
+
+        return resgateSalvo;
     }
 }
