@@ -1,0 +1,28 @@
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+bin/
+out/
+
+# Python
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Node
+node_modules/
+
+# Logs e temporários
+*.log
+*.tmp
+*.cache
+
+# SO
+Thumbs.db
+desktop.ini
