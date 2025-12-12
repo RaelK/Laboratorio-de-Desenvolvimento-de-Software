@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cupom de Vantagem - bitStudent</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color:#f5f5f5; padding:20px;">
+<div style="max-width: 550px; margin: auto; background:#ffffff; padding:25px; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1);">
+
+    <div style="text-align: center;">
+        <h2 style="color:#4F46E5;">🎓 bitStudent</h2>
+        <p style="font-size:15px; color:#444;">
+            Olá <strong>{{aluno}}</strong>, seu resgate foi realizado com sucesso!
+        </p>
+    </div>
+
+    <div style="margin: 25px auto; text-align:center;">
+        <img src="{{imagemVantagem}}" alt="Imagem da Vantagem"
+             style="width:140px; border-radius:10px; margin-bottom:15px;">
+        <h3 style="color:#111;">{{nomeVantagem}}</h3>
+    </div>
+
+    <div style="background:#4F46E5; color:#fff; padding:12px; border-radius:10px; text-align:center; font-size:18px;">
+        Código do Cupom:
+        <strong style="font-size:20px;">{{codigo}}</strong>
+    </div>
+
+    <div style="margin-top:25px; text-align:center;">
+        <img src="data:image/png;base64,{{qrcode}}" style="width:160px;">
+        <p style="font-size:12px; color:#555;">Apresente este QR Code para usar sua vantagem</p>
+    </div>
+
+    <p style="font-size:13px; color:#555; text-align:center;">
+        Empresa Parceira: <strong>{{empresa}}</strong><br>
+        Data: <strong>{{data}}</strong>
+    </p>
+
+    <div style="margin-top:25px; text-align:center;">
+        <a href="http://localhost:5173/" 
+           style="background:#22C55E; color:#fff; text-decoration:none; padding:10px 18px; border-radius:8px;">
+           Ver mais vantagens
+        </a>
+    </div>
+
+    <p style="font-size:12px; color:#777; text-align:center; margin-top:20px;">
+        😊 Obrigado por participar do bitStudent!
+    </p>
+</div>
+</body>
+</html>
