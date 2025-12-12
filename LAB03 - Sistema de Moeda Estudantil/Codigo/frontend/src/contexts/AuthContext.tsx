@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "../services/api";
 
 export type Role = "ALUNO" | "PROFESSOR" | "EMPRESA";
 
@@ -23,20 +24,20 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-export function AuthProvider({ children }: any) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem("user");
     return saved ? JSON.parse(saved) : null;
   });
 
-  // Persistência do usuário automaticamente
+  // Persistência
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("tipoUsuario", user.tipoUsuario);
 
       if (user.tipoUsuario === "EMPRESA") {
-        localStorage.setItem("empresaId", user.idUser.toString());
+        localStorage.setItem("empresaId", String(user.idUser));
       }
     } else {
       localStorage.removeItem("user");
@@ -45,70 +46,61 @@ export function AuthProvider({ children }: any) {
     }
   }, [user]);
 
-  // ================================
+  // =====================
   // LOGIN
-  // ================================
-  async function login(email: string, senha: string) {
+  // =====================
+  async function login(email: string, senha: string): Promise<boolean> {
     try {
-      const resp = await fetch("http://localhost:8080/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha }),
+      const { data } = await api.post("/auth/login", { email, senha });
+
+      setUser({
+        idUser: data.idUser ?? data.id,
+        nome: data.nome,
+        tipoUsuario: data.tipoUsuario,
+        saldo: data.saldo ?? 0,
       });
 
-      if (!resp.ok) return false;
-
-      const data = await resp.json();
-
-      setUser(data);
       return true;
-    } catch {
+    } catch (err) {
+      console.error("Erro no login:", err);
       return false;
     }
   }
 
-  // ================================
+  // =====================
   // LOGOUT
-  // ================================
+  // =====================
   function logout() {
     setUser(null);
   }
 
-  // ================================
-  // REGISTER (CADASTRO)
-  // ================================
+  // =====================
+  // REGISTER
+  // =====================
   async function register(
     nome: string,
     email: string,
     senha: string,
     role: Role
-  ) {
+  ): Promise<boolean> {
     try {
-      const resp = await fetch("http://localhost:8080/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nome,
-          email,
-          senha,
-          tipo: role, // CORREÇÃO FUNDAMENTAL
-        }),
+      const { data } = await api.post("/auth/register", {
+        nome,
+        email,
+        senha,
+        tipo: role,
       });
 
-      if (!resp.ok) return false;
-
-      const data = await resp.json();
-
-      // Login automático
       setUser({
-        idUser: data.id,
+        idUser: data.idUser ?? data.id,
         nome: data.nome,
         tipoUsuario: role,
         saldo: data.saldo ?? 0,
       });
 
       return true;
-    } catch {
+    } catch (err) {
+      console.error("Erro no cadastro:", err);
       return false;
     }
   }
