@@ -8,7 +8,6 @@ export type InstituicaoEnsino = {
 
 /* ======================================================
    ALUNO — MODELO REAL DO BACKEND
-   (backend usa STRING para instituição)
 ====================================================== */
 export type Aluno = {
   id: number;
@@ -21,7 +20,8 @@ export type Aluno = {
   curso: string;
   saldoMoedas: number;
 
-  instituicao: string; // STRING do backend (UFMG, CEFET-MG etc.)
+  // backend envia STRING (ex: "UFMG", "CEFET-MG")
+  instituicao: string;
 };
 
 /* Payload enviado no create/update */
@@ -35,19 +35,20 @@ export type AlunoCreate = {
   endereco: string;
   curso: string;
 
-  saldoMoedas?: number;   // enviado como 0 ao criar
-
-  instituicao: string;    // backend aceita APENAS string
+  saldoMoedas?: number; // frontend envia 0 ao criar
+  instituicao: string; // backend aceita APENAS string
 };
 
 /* ======================================================
-   EMPRESA PARCEIRA — modelo real
+   EMPRESA PARCEIRA — MODELO REAL
 ====================================================== */
 export type EmpresaParceira = {
   id: number;
   nome: string;
   email: string;
-  login?: string;   // não existe no backend, mas é opcional no front
+
+  // campos opcionais apenas para o frontend
+  login?: string;
   cnpj?: string;
   endereco?: string;
 };
@@ -63,7 +64,7 @@ export type EmpresaCreate = {
 };
 
 /* ======================================================
-   PROFESSOR — modelo real do backend
+   PROFESSOR — MODELO REAL DO BACKEND
 ====================================================== */
 export type Professor = {
   id: number;
@@ -72,9 +73,10 @@ export type Professor = {
   cpf: string;
   departamento: string;
   saldoMoedas: number;
+
   senha?: string;
 
-  // FRONT usa isto apenas para exibir, backend NÃO usa
+  // usado SOMENTE no frontend (exibição)
   instituicaoEnsino?: InstituicaoEnsino;
 };
 
@@ -84,15 +86,12 @@ export type ProfessorCreate = {
   departamento: string;
   senha: string;
 
-  // não existe no backend, opcional apenas no front
-  instituicaoEnsino?: {
-    id: number;
-    nome: string;
-  };
+  // não existe no backend, apenas no front
+  instituicaoEnsino?: InstituicaoEnsino;
 };
 
 /* ======================================================
-   TRANSACÃO
+   TRANSAÇÃO
 ====================================================== */
 export type Transacao = {
   id: number;
@@ -100,6 +99,7 @@ export type Transacao = {
   valor: number;
   descricao: string;
   tipo: "ENVIO" | "RESGATE";
+
   professor?: Professor;
   aluno?: Aluno;
 };
