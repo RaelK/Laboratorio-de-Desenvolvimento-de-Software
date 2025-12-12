@@ -1,5 +1,7 @@
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
 
   mail:
     host: smtp.gmail.com
@@ -7,5 +9,8 @@ spring:
     username: noreplybitstudent@gmail.com
     password: ${GMAIL_APP_PASSWORD}
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
