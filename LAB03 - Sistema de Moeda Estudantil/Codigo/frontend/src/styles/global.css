@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+@layer components {
+  .card {
+    @apply bg-[#0f1b3d] border border-brand-900/40 rounded-2xl p-5 shadow-xl;
+    background-image: radial-gradient(800px circle at 0% 0%,
+        rgba(14, 165, 233, 0.25),
+        transparent 40%);
+  }
+
+  /* BOTÕES PADRÃO */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-brand-900 hover:bg-brand-800 text-white font-medium cursor-pointer transition;
+  }
+
+  .btn-primary {
+    @apply border-brand-500 bg-brand-600 hover:bg-brand-500 text-white;
+  }
+
+  /* INPUTS */
+  .input {
+    @apply w-full bg-[#0b1636] border border-white/10 rounded-xl px-3 py-2 text-white;
+  }
+
+  .input:focus {
+    @apply ring-2 ring-brand-500/50 border-brand-600;
+  }
+
+  /* LABEL */
+  .label {
+    @apply text-sm text-white/70 mb-1 block;
+  }
+
+  /* TABELAS */
+  .table th {
+    @apply text-left text-white/60 bg-[#0b1636] font-medium px-3 py-2;
+  }
+
+  .table td {
+    @apply border-b border-white/10 px-3 py-2;
+  }
+
+  /* DROPDOWN PADRONIZADO */
+  .dropdown-pill {
+    @apply bg-brand-900 text-white border border-white/10 rounded-xl shadow-xl py-2 w-40;
+  }
+
+  .dropdown-pill a,
+  .dropdown-pill button {
+    @apply block px-4 py-2 text-white hover:bg-brand-700 rounded-lg;
+  }
+}
+
+/* ============================================================
+   LOGIN / CADASTRO – VÍDEO DE FUNDO
+   ============================================================ */
+.video-bg-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+.video-bg-iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 177.77vh;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border: none;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .video-bg-iframe {
+    width: 100vw;
+    height: 56.25vw;
+  }
+}
+
+/* ============================================================
+   FUNDO GLOBAL PARA PÁGINAS INTERNAS
+   ============================================================ */
+.bg-full {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover !important;
+  /* Preenche toda a tela */
+  background-position: center !important;
+  /* Centraliza */
+  background-repeat: no-repeat !important;
+  /* Sem repetição */
+  z-index: -10;
+}
+
+/* ============================================================
+   FUNDO ESPECIAL – QUADRO (CARTEIRINHA)
+   ============================================================ */
+.chalkboard {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/images/quadro.png");
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  z-index: -10;
+}

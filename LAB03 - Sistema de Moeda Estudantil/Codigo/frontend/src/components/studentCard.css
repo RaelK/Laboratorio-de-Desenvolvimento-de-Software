@@ -1,0 +1,35 @@
+/* ======== TAMANHO DO CARTÃO (AUMENTADO E PROPORCIONAL) ======== */
+.flip-card {
+  width: min(95vw, 560px);               /* aumenta bastante a largura */
+  height: calc(min(95vw, 560px) * 1.55); /* proporção perfeita */
+  margin: 0 auto;
+  perspective: 1600px;                   /* melhora o efeito 3D */
+}
+
+/* Parte interna com animação */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.9s ease;
+  transform-style: preserve-3d;
+}
+
+/* Efeito girar */
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Faces */
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+/* Verso */
+.flip-card-back {
+  transform: rotateY(180deg);
+}

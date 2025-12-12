@@ -1,0 +1,29 @@
+# FRONTEND
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.local
+
+# BACKEND
+backend/bitStudent/target/
+backend/bitStudent/.classpath
+backend/bitStudent/.project
+backend/bitStudent/.settings/
+
+# TOKENS E CREDENCIAIS (NÃO SUBIR NUNCA)
+backend/bitStudent/src/main/resources/gmail/
+backend/bitStudent/tokens/
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.tmp
